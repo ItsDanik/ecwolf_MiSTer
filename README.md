@@ -4,7 +4,7 @@ Wolfenstein 3D on [MiSTer FPGA](https://github.com/MiSTer-devel/Main_MiSTer/wiki
 
 The game itself is [ECWolf](https://maniacsvault.net/ecwolf/), the source port of the Wolfenstein 3D engine. It runs on the MiSTer's ARM CPU. The ECWolf FPGA core provides native 320x200 15kHz video (CRT, VGA and HDMI), 44.1kHz audio and keyboard, mouse and gamepad input. The two halves talk through shared DDR3 memory.
 
-> **Not released yet.** First development version.
+> **Beta.** This is the first public release. Expect rough edges and please report problems in the issues.
 
 ## Requirements
 
@@ -13,7 +13,7 @@ The game itself is [ECWolf](https://maniacsvault.net/ecwolf/), the source port o
 
 ## Installation
 
-1. Extract `ECWolf_YYYYMMDD.zip` to the root of your SD card (`/media/fat`). That gives you:
+1. Download the newest `ECWolf_YYYYMMDD.zip` from [releases](releases/) and extract it to the root of your SD card (`/media/fat`). That gives you:
    - `_Other/ECWolf_YYYYMMDD.rbf`, the FPGA core
    - `games/ECWolf/`, the game binary and its launcher
    - `Scripts/danik_hybrid_cores.sh`, the launcher
@@ -100,6 +100,7 @@ The toolchain image (Debian bullseye, glibc 2.31 to match the MiSTer) is built f
 | `core/` | FPGA core, based on [Template_MiSTer](https://github.com/MiSTer-devel/Template_MiSTer): `ECWolf.sv` (OSD and button names) around `hybrid/rtl/hybrid_host.sv` |
 | `ecwolf/` | submodule: [ItsDanik/ecwolf](https://github.com/ItsDanik/ecwolf) branch `mister`, [ECWolf](https://bitbucket.org/ecwolf/ecwolf) with the MiSTer changes: `src/mister/` and a few `#ifdef MISTER_HYBRID` |
 | `package/` | files shipped in the release next to the binary (`danik_hybrid_launch.sh`, README) |
+| `releases/` | release packages |
 
 ### Development notes
 
