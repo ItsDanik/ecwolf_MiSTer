@@ -1,0 +1,4 @@
+[submodule "ecwolf"]
+	path = ecwolf
+	url = https://github.com/ItsDanik/ecwolf.git
+	branch = mister

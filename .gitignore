@@ -1,0 +1,12 @@
+# Game data is copyrighted and never committed
+*.WL6
+*.WL1
+*.SOD
+*.SDM
+*.SD2
+*.SD3
+*.N3D
+
+# Build outputs
+/build/
+/dist/
