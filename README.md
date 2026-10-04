@@ -8,7 +8,7 @@ The game itself is [ECWolf](https://maniacsvault.net/ecwolf/), the source port o
 
 ## Requirements
 
-- **danik_hybrid_cores**, the launcher that comes in the release zip (`Scripts/danik_hybrid_cores.sh`): run it **once** from the MiSTer's `Scripts` menu. It starts the game whenever the core is loaded, keeps running after a reboot, and serves all our hybrid cores. Without it the core only shows colour bars.
+- **danik_hybrid_cores**, the launcher that comes in the release zip (`Scripts/danik_hybrid_cores.sh`): run it **once** from the MiSTer's `Scripts` menu. It starts the game whenever the core is loaded, keeps running after a reboot, and serves all our hybrid cores. Every hybrid core brings the launcher along and the newest version is the one that runs, so it never has to be run again after an update. Without it the core only shows colour bars.
 - **Game data**, which is not included: the shareware episode or your own copy of Wolfenstein 3D, Spear of Destiny or Super 3-D Noah's Ark.
 
 ## Installation
@@ -16,7 +16,7 @@ The game itself is [ECWolf](https://maniacsvault.net/ecwolf/), the source port o
 1. Download the newest `ECWolf_YYYYMMDD.zip` from [releases](releases/) and extract it to the root of your SD card (`/media/fat`). That gives you:
    - `_Other/ECWolf_YYYYMMDD.rbf`, the FPGA core
    - `games/ECWolf/`, the game binary and its launcher
-   - `Scripts/danik_hybrid_cores.sh`, the launcher
+   - `Scripts/danik_hybrid_cores.sh`, the launcher (from [Hybrid_MiSTer](https://github.com/ItsDanik/Hybrid_MiSTer), which can also keep it up to date through `update_all`)
 2. Copy the data files of your games to `/media/fat/games/ECWolf/`:
 
    | Game | Files |
@@ -96,7 +96,7 @@ The toolchain image (Debian bullseye, glibc 2.31 to match the MiSTer) is built f
 
 | Path | |
 |---|---|
-| `hybrid/` | What all our hybrid cores share: the FPGA host module, the ARM side library, SDL2 drivers, toolchain and conventions. See [hybrid/README.md](hybrid/README.md). |
+| `hybrid/` | submodule: [ItsDanik/Hybrid_MiSTer](https://github.com/ItsDanik/Hybrid_MiSTer), what all our hybrid cores share: the FPGA host module, the ARM side library, SDL2 drivers, the launcher (`danik_hybrid_cores.sh`), toolchain and conventions. See its README. |
 | `core/` | FPGA core, based on [Template_MiSTer](https://github.com/MiSTer-devel/Template_MiSTer): `ECWolf.sv` (OSD and button names) around `hybrid/rtl/hybrid_host.sv` |
 | `ecwolf/` | submodule: [ItsDanik/ecwolf](https://github.com/ItsDanik/ecwolf) branch `mister`, [ECWolf](https://bitbucket.org/ecwolf/ecwolf) with the MiSTer changes: `src/mister/` and a few `#ifdef MISTER_HYBRID` |
 | `package/` | files shipped in the release next to the binary (`danik_hybrid_launch.sh`, README) |
@@ -118,9 +118,10 @@ The toolchain image (Debian bullseye, glibc 2.31 to match the MiSTer) is built f
 - **[ECWolf](https://maniacsvault.net/ecwolf/)** by Braden "Blzut3" Obrzut and contributors, based on Wolf4SDL and the Wolfenstein 3D source by id Software.
 - **[SDL](https://libsdl.org)** by Sam Lantinga and contributors.
 - **[MiSTer](https://github.com/MiSTer-devel)** by Sorgelig and the MiSTer-devel contributors: the framework and Template_MiSTer.
+- **[MiSTer Frontier](https://github.com/MiSTerOrganize/MiSTer_Frontier)** by MiSTer Organize: thank you for the inspiration. Hybrid cores on the MiSTer, and the way their game is launched (a daemon that watches the loaded core and runs a script from its games folder), come from MiSTer Frontier. Our launcher is a separate implementation and does not need MiSTer Frontier installed.
 
 This project and its maintainers are in no way associated with or endorsed by id Software, Apogee, FormGen or Wisdom Tree. It does not include any game data.
 
 ## License
 
-The top-level scripts, tools and documentation are licensed under the [GPL-3.0](LICENSE). The components keep their own licenses: ECWolf is GPL-2.0-or-later as built here (`ecwolf/docs/copyright`), SDL and the SDL drivers in `hybrid/sdl2` are zlib, the FPGA core and the MiSTer framework are GPL-2.0 (`core/LICENSE`, with the core's own sources GPL-2.0-or-later).
+The top-level scripts, tools and documentation are licensed under the [GPL-3.0](LICENSE). The components keep their own licenses: the shared framework in `hybrid/` is GPL-3.0 except where its files say otherwise, ECWolf is GPL-2.0-or-later as built here (`ecwolf/docs/copyright`), SDL and the SDL drivers in `hybrid/sdl2` are zlib, the FPGA core and the MiSTer framework are GPL-2.0 (`core/LICENSE`, with the core's own sources GPL-2.0-or-later).

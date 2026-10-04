@@ -10,7 +10,9 @@ Requirements
     (Scripts/danik_hybrid_cores.sh): copy it to /media/fat/Scripts/ and run
     it ONCE from the MiSTer's Scripts menu. It starts the game whenever
     the core is loaded, keeps running after a reboot, and serves all our
-    hybrid cores. Without it the core only shows colour bars.
+    hybrid cores. Every hybrid core brings the launcher along and the
+    newest version is the one that runs, so it never has to be run again
+    after an update. Without it the core only shows colour bars.
   - Game data. It is not included: use the shareware episode or your own
     copy of Wolfenstein 3D, Spear of Destiny or Super 3-D Noah's Ark.
 
@@ -81,3 +83,22 @@ Files
   ecwolf.cfg    the game's settings, written on exit
   saves/        saved games
   /media/fat/logs/ECWolf/ecwolf.log   the game's log
+
+Credits
+  ECWolf by Braden "Blzut3" Obrzut and contributors, based on Wolf4SDL and
+  the Wolfenstein 3D source by id Software.
+  SDL by Sam Lantinga and contributors.
+  MiSTer by Sorgelig and the MiSTer-devel contributors.
+  MiSTer Frontier by MiSTer Organize
+  (https://github.com/MiSTerOrganize/MiSTer_Frontier): thank you for the
+  inspiration. Hybrid cores on the MiSTer, and the way their game is
+  launched, come from MiSTer Frontier. Our launcher is a separate
+  implementation and does not need MiSTer Frontier installed.
+
+License
+  ECWolf: GPL-2.0-or-later (LICENSE-ecwolf.txt, LICENSE-gpl.txt)
+  SDL: zlib (LICENSE-sdl.txt)
+  The launcher scripts: GPL-3.0 (LICENSE-gpl3.txt)
+  The FPGA core: GPL-2.0
+  Source: https://github.com/ItsDanik/ecwolf_MiSTer
+          https://github.com/ItsDanik/Hybrid_MiSTer (launcher, framework)

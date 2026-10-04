@@ -2,3 +2,7 @@
 	path = ecwolf
 	url = https://github.com/ItsDanik/ecwolf.git
 	branch = mister
+[submodule "hybrid"]
+	path = hybrid
+	url = https://github.com/ItsDanik/Hybrid_MiSTer.git
+	branch = main
