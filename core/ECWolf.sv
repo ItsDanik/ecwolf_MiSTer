@@ -55,6 +55,7 @@ localparam CONF_STR = {
 	"O[4:2],Scandoubler Fx,None,HQ2x,CRT 25%,CRT 50%,CRT 75%;",
 	"O[6:5],Stereo Mix,None,25%,50%,100%;",
 	"-;",
+	"O[32],Resolution,320x200,640x200;",
 	"O[27:24],Mouse Sensitivity,100%,125%,150%,200%,300%,400%,25%,50%,75%;",
 	"O[31:28],Stick Sensitivity,100%,125%,150%,200%,300%,25%,50%,75%;",
 	"O[19:16],Menu OK,MiSTer,A,B,X,Y,L,R,Select,Start;",
@@ -165,7 +166,8 @@ hybrid_host host
 assign DDRAM_CLK = clk_sys;
 
 //////////////////////////////////////////////////////////////////
-// Video output. The native signal is 15kHz; video_mixer scandoubles it
+// Video output. The native signal is 15kHz, in the resolution the game picked
+// (the Resolution option is read by the game); video_mixer scandoubles it
 // for VGA monitors (forced_scandoubler) or when a scandoubler effect is
 // selected. Analog output is untouched otherwise so CRTs get the real
 // 15kHz signal. HDMI goes through the framework's scaler; video_freak
@@ -180,7 +182,7 @@ assign CLK_VIDEO = clk_sys;
 assign VGA_SL = sl[1:0];
 assign VGA_F1 = 0;
 
-video_mixer #(.LINE_LENGTH(320), .HALF_DEPTH(0), .GAMMA(1)) video_mixer
+video_mixer #(.LINE_LENGTH(640), .HALF_DEPTH(0), .GAMMA(1)) video_mixer
 (
 	.CLK_VIDEO(CLK_VIDEO),
 	.CE_PIXEL(CE_PIXEL),

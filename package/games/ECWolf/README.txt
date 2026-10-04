@@ -2,8 +2,8 @@ ECWolf for MiSTer - Wolfenstein 3D as a hybrid core
 ====================================================
 
 The game (ECWolf, a source port of the Wolfenstein 3D engine) runs on the
-MiSTer's ARM CPU; the ECWolf FPGA core provides native 320x200 15kHz video
-(CRT, VGA and HDMI), audio and input.
+MiSTer's ARM CPU; the ECWolf FPGA core provides native 15kHz video (CRT, VGA
+and HDMI) at 320x200 or 640x200, audio and input.
 
 Requirements
   - danik_hybrid_cores, the launcher that comes with this release
@@ -34,6 +34,12 @@ game returns to it. With one game, quitting returns to the MiSTer menu.
 
 OSD options
   Aspect ratio, Scale, Scandoubler Fx, Stereo Mix as in other cores.
+  Resolution    what the game renders and the core puts out, always at
+                15kHz: 320x200 (default, as the original) or 640x200, the
+                same 200 lines with twice the detail across: every pixel
+                of the original becomes two, so the picture has the same
+                size and shape on the screen. Applies at once in the game
+                and its menus, on the title screens with the next page.
   Mouse Sensitivity
                 how fast the mouse turns, 25% to 400%.
   Stick Sensitivity
@@ -44,6 +50,15 @@ OSD options
                 the gamepad button that confirms / goes back in the game's
                 menus, whatever it does in the game. MiSTer (default) uses
                 the OK/Back buttons of your MiSTer menu.
+
+Frame pacing
+  Wolfenstein 3D moves 70 times per second, the refresh rate of the VGA
+  mode it was written for; the core shows 59.64 fields per second, as a
+  15kHz screen needs. To keep movement even, the game draws exactly one
+  frame per field and places the player, enemies, doors and pushwalls
+  between two steps of the game for it. The game itself runs at its
+  original speed. It holds the full rate of one frame per field ("60fps")
+  at both resolutions, 320x200 and 640x200.
 
 Controls
   Keyboard and mouse:

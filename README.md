@@ -2,9 +2,9 @@
 
 Wolfenstein 3D on [MiSTer FPGA](https://github.com/MiSTer-devel/Main_MiSTer/wiki) as a hybrid core.
 
-The game itself is [ECWolf](https://maniacsvault.net/ecwolf/), the source port of the Wolfenstein 3D engine. It runs on the MiSTer's ARM CPU. The ECWolf FPGA core provides native 320x200 15kHz video (CRT, VGA and HDMI), 44.1kHz audio and keyboard, mouse and gamepad input. The two halves talk through shared DDR3 memory.
+The game itself is [ECWolf](https://maniacsvault.net/ecwolf/), the source port of the Wolfenstein 3D engine. It runs on the MiSTer's ARM CPU. The ECWolf FPGA core provides native 15kHz video (CRT, VGA and HDMI) at 320x200 or 640x200, 44.1kHz audio and keyboard, mouse and gamepad input. The two halves talk through shared DDR3 memory.
 
-> **Beta.** This is the first public release. Expect rough edges and please report problems in the issues.
+> **Beta.** Expect rough edges and please report problems in the issues.
 
 ## Requirements
 
@@ -36,9 +36,23 @@ With more than one game installed a list comes up to pick from; quitting a game 
 | Option | |
 |---|---|
 | Aspect ratio, Scale, Scandoubler Fx, Stereo Mix | as in other cores |
+| Resolution | what the game renders and the core puts out, always at 15kHz: **320x200** (default, as the original) or **640x200**, the same 200 lines with twice the detail across: every pixel of the original becomes two, so the picture has the same size and shape on the screen. Applies at once in the game and its menus, on the title screens with the next page |
 | Mouse Sensitivity | how fast the mouse turns, 25% to 400% |
 | Stick Sensitivity | how fast the gamepad's stick turns, 25% to 300%. Both multiply the sensitivity set in the game's own menu and apply at once |
 | Menu OK, Menu Back | the gamepad button that confirms / goes back in the game's menus, whatever it does in the game. **MiSTer** (default) uses the OK/Back buttons of your MiSTer menu |
+
+## Frame pacing
+
+Wolfenstein 3D moves 70 times per second (70 "tics"), the refresh rate of the VGA mode it was written for. A 15kHz picture a TV accepts has about 60 fields per second: the core shows 59.64 (262 lines of 400 pixels at 6.25MHz). One field is therefore 1.17 tics. Drawing the state of the last tic for every field makes every sixth picture jump two tics ahead, which shows as a regular stutter; ECWolf has the same on any 60Hz monitor.
+
+This build draws exactly one frame per field and puts each frame at the right point in time:
+
+- The game's clock is the field counter of the core, not the system clock, so every frame is 1.17 tics after the one before.
+- The game still runs whole tics, 70 per second, with the same rules and speed. The picture is drawn part of the way into the last tic: the player, the other actors, the doors and the pushwalls are put between where they were before that tic and where they are after it. What you see is one tic (14ms) behind the game.
+- The mouse is the exception: it is read once per frame and what it turns the player is on the screen at once.
+- The launcher runs the game at a raised priority (`nice -n -20`), so the other programs on the MiSTer cannot make it miss a field.
+
+The game holds the full rate of one frame per field (59.64 per second, "60fps") at both resolutions, 320x200 and 640x200.
 
 ## Controls
 
@@ -111,6 +125,8 @@ The toolchain image (Debian bullseye, glibc 2.31 to match the MiSTer) is built f
   cd <data folder> && MISTER_HYBRID_SHM=/tmp/shm ~/MiSTer-ecwolf/build/host/ecwolf
   ```
 - `hybrid/sim/run.sh` runs the testbench of the FPGA host module.
+- Frame pacing (see above) in the source: `MiSTer_FrameTics()` in `ecwolf/src/mister/mister.cpp` waits for the next field and turns fields into tics and a fraction (`r_ticfrac`); `CalcTics()` in `wl_play.cpp` uses it. `PlayLoop()` stores where the actors are before every tic (`R_StoreActorPositions()`); `ThreeDRefresh()` in `wl_draw.cpp` moves them to their place between the tics for the time of drawing and back. Doors and pushwalls tell the renderer how far they moved in their tic (`R_InterpolateMapValue()`, `R_InterpolatePushwall()`, called from `lnspec.cpp`). Game logic never sees the interpolated values. Without the core (headless) the original timing is used.
+- Floors and ceilings of one colour all over the map, as in every level of Wolfenstein 3D, are filled row by row instead of textured pixel by pixel (`SolidPlaneColor()` in `wl_floorceiling.cpp`, `GameMap::GetUniformFlats()`). The picture is the same; maps with textured or mixed floors take the original path.
 - `touch /tmp/ecwolf_nolaunch` on the MiSTer keeps the core loaded without starting the game, so you can start a development binary by hand (set `MISTER_HYBRID_CORE=ECWolf`). `/tmp/danik_hybrid_cores.log` shows what the launcher daemon did.
 
 ## Credits

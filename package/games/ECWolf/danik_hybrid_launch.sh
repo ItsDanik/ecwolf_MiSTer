@@ -38,13 +38,15 @@ export XDG_CONFIG_HOME="$GAMEDIR/config"
 export XDG_DATA_HOME="$GAMEDIR/config"
 
 # Both CPUs: the game takes CPU0 (better DDR3 bandwidth, Main_MiSTer lives on
-# CPU1) and runs audio and the frame copy on CPU1.
+# CPU1) and runs audio and the frame copy on CPU1. Everything else on the
+# MiSTer (scripts, daemons, interrupts) lands on CPU0 as well: without the
+# higher priority the game waits for it a quarter of the time and misses fields.
 # Exit code 42: the player quit a game picked from the list, show the list again.
 GAME=
 # The game must not outlive us: on SIGTERM it saves its settings and quits
 trap '[ -n "$GAME" ] && kill "$GAME" 2>/dev/null; exit 0' TERM INT
 while :; do
-    taskset 0x03 ./ECWolf --config "$GAMEDIR/ecwolf.cfg" --savedir "$GAMEDIR/saves" --audiobuffer 1024 >> "$LOG" 2>&1 &
+    nice -n -20 taskset 0x03 ./ECWolf --config "$GAMEDIR/ecwolf.cfg" --savedir "$GAMEDIR/saves" --audiobuffer 1024 >> "$LOG" 2>&1 &
     GAME=$!
     wait "$GAME"
     [ $? -eq 42 ] || break
