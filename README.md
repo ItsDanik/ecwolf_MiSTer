@@ -129,6 +129,10 @@ The toolchain image (Debian bullseye, glibc 2.31 to match the MiSTer) is built f
 - Floors and ceilings of one colour all over the map, as in every level of Wolfenstein 3D, are filled row by row instead of textured pixel by pixel (`SolidPlaneColor()` in `wl_floorceiling.cpp`, `GameMap::GetUniformFlats()`). The picture is the same; maps with textured or mixed floors take the original path.
 - `touch /tmp/ecwolf_nolaunch` on the MiSTer keeps the core loaded without starting the game, so you can start a development binary by hand (set `MISTER_HYBRID_CORE=ECWolf`). `/tmp/danik_hybrid_cores.log` shows what the launcher daemon did.
 
+## Support
+
+If you enjoy this project, you can support my work on [Patreon](https://www.patreon.com/itsdanik).
+
 ## Credits
 
 - **[ECWolf](https://maniacsvault.net/ecwolf/)** by Braden "Blzut3" Obrzut and contributors, based on Wolf4SDL and the Wolfenstein 3D source by id Software.
