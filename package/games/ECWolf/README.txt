@@ -5,6 +5,8 @@ The game (ECWolf, a source port of the Wolfenstein 3D engine) runs on the
 MiSTer's ARM CPU; the ECWolf FPGA core provides native 15kHz video (CRT, VGA
 and HDMI) at 320x200 or 640x200, audio and input.
 
+Disclaimer: AI is being used to speed up development of this project.
+
 Requirements
   - danik_hybrid_cores, the launcher that comes with this release
     (Scripts/danik_hybrid_cores.sh): copy it to /media/fat/Scripts/ and run
