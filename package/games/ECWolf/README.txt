@@ -3,7 +3,7 @@ ECWolf for MiSTer - Wolfenstein 3D as a hybrid core
 
 The game (ECWolf, a source port of the Wolfenstein 3D engine) runs on the
 MiSTer's ARM CPU; the ECWolf FPGA core provides native 15kHz video (CRT, VGA
-and HDMI) at 320x200 or 640x200, audio and input.
+and HDMI) at 320x200, 640x200, 320x240 or 640x240, audio and input.
 
 Disclaimer: AI is being used to speed up development of this project.
 
@@ -14,7 +14,7 @@ Requirements
     the core is loaded, keeps running after a reboot, and serves all our
     hybrid cores. Every hybrid core brings the launcher along and the
     newest version is the one that runs, so it never has to be run again
-    after an update. Without it the core only shows colour bars.
+    after an update. Without it the core only shows the MiSTer logo.
   - Game data. It is not included: use the shareware episode or your own
     copy of Wolfenstein 3D, Spear of Destiny or Super 3-D Noah's Ark.
 
@@ -36,12 +36,24 @@ game returns to it. With one game, quitting returns to the MiSTer menu.
 
 OSD options
   Aspect ratio, Scale, Scandoubler Fx, Stereo Mix as in other cores.
+  HDMI Only     as in the other hybrid cores, for resolutions of 640x400
+                and more: ECWolf has none, so nothing changes here.
+  CRT Options   for a 15kHz screen: Horizontal Size, Horizontal Pos and
+                Vertical Pos fit the picture to it. The pixels stay as they
+                are; HDMI is not affected. Not there with
+                forced_scandoubler=1.
   Resolution    what the game renders and the core puts out, always at
-                15kHz: 320x200 (default, as the original) or 640x200, the
+                15kHz: 320x200 (default, as the original), 640x200, the
                 same 200 lines with twice the detail across: every pixel
                 of the original becomes two, so the picture has the same
-                size and shape on the screen. Applies at once in the game
-                and its menus, on the title screens with the next page.
+                size and shape on the screen, and 320x240 and 640x240,
+                the same with 240 lines: the game's view and the status
+                bar fill them, with more detail from top to bottom, while
+                the menus and title screens keep their 200 lines in the
+                middle. A 15kHz screen that shows all of 200 lines may
+                cut off the first and last of 240. Applies at once in the
+                game and its menus, on the title screens with the next
+                page.
   Mouse Sensitivity
                 how fast the mouse turns, 25% to 400%.
   Stick Sensitivity

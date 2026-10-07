@@ -2,7 +2,7 @@
 
 Wolfenstein 3D on [MiSTer FPGA](https://github.com/MiSTer-devel/Main_MiSTer/wiki) as a hybrid core.
 
-The game itself is [ECWolf](https://maniacsvault.net/ecwolf/), the source port of the Wolfenstein 3D engine. It runs on the MiSTer's ARM CPU. The ECWolf FPGA core provides native 15kHz video (CRT, VGA and HDMI) at 320x200 or 640x200, 44.1kHz audio and keyboard, mouse and gamepad input. The two halves talk through shared DDR3 memory.
+The game itself is [ECWolf](https://maniacsvault.net/ecwolf/), the source port of the Wolfenstein 3D engine. It runs on the MiSTer's ARM CPU. The ECWolf FPGA core provides native 15kHz video (CRT, VGA and HDMI) at 320x200, 640x200, 320x240 or 640x240, 44.1kHz audio and keyboard, mouse and gamepad input. The two halves talk through shared DDR3 memory.
 
 > **Beta.** Expect rough edges and please report problems in the issues.
 
@@ -10,7 +10,7 @@ Disclaimer: AI is being used to speed up development of this project.
 
 ## Requirements
 
-- **danik_hybrid_cores**, the launcher that comes in the release zip (`Scripts/danik_hybrid_cores.sh`): run it **once** from the MiSTer's `Scripts` menu. It starts the game whenever the core is loaded, keeps running after a reboot, and serves all our hybrid cores. Every hybrid core brings the launcher along and the newest version is the one that runs, so it never has to be run again after an update. Without it the core only shows colour bars.
+- **danik_hybrid_cores**, the launcher that comes in the release zip (`Scripts/danik_hybrid_cores.sh`): run it **once** from the MiSTer's `Scripts` menu. It starts the game whenever the core is loaded, keeps running after a reboot, and serves all our hybrid cores. Every hybrid core brings the launcher along and the newest version is the one that runs, so it never has to be run again after an update. Without it the core only shows the MiSTer logo.
 - **Game data**, which is not included: the shareware episode or your own copy of Wolfenstein 3D, Spear of Destiny or Super 3-D Noah's Ark.
 
 ## Installation
@@ -38,7 +38,9 @@ With more than one game installed a list comes up to pick from; quitting a game 
 | Option | |
 |---|---|
 | Aspect ratio, Scale, Scandoubler Fx, Stereo Mix | as in other cores |
-| Resolution | what the game renders and the core puts out, always at 15kHz: **320x200** (default, as the original) or **640x200**, the same 200 lines with twice the detail across: every pixel of the original becomes two, so the picture has the same size and shape on the screen. Applies at once in the game and its menus, on the title screens with the next page |
+| HDMI Only | as in the other hybrid cores, for resolutions of 640x400 and more: ECWolf has none, so nothing changes here |
+| CRT Options | for a 15kHz screen: *Horizontal Size*, *Horizontal Pos* and *Vertical Pos* fit the picture to it. The pixels stay as they are; HDMI is not affected. Not there with `forced_scandoubler=1` |
+| Resolution | what the game renders and the core puts out, always at 15kHz: **320x200** (default, as the original), **640x200**, the same 200 lines with twice the detail across: every pixel of the original becomes two, so the picture has the same size and shape on the screen, and **320x240** and **640x240**, the same with 240 lines: the game's view and the status bar fill them, with more detail from top to bottom, while the menus and title screens keep their 200 lines in the middle. A 15kHz screen that shows all of 200 lines may cut off the first and last of 240. Applies at once in the game and its menus, on the title screens with the next page |
 | Mouse Sensitivity | how fast the mouse turns, 25% to 400% |
 | Stick Sensitivity | how fast the gamepad's stick turns, 25% to 300%. Both multiply the sensitivity set in the game's own menu and apply at once |
 | Menu OK, Menu Back | the gamepad button that confirms / goes back in the game's menus, whatever it does in the game. **MiSTer** (default) uses the OK/Back buttons of your MiSTer menu |

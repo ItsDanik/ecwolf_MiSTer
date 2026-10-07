@@ -13,6 +13,6 @@
 
 These are ECWolf's own features, not something other cores start with:
 
-- 640x200 video mode with the OSD option *Resolution*.
+- 640x200, 320x240 and 640x240 video modes with the OSD option *Resolution*.
 - Frame interpolation between the game's 70Hz tics (README, "Frame pacing").
 - Solid colour floors and ceilings filled row by row.

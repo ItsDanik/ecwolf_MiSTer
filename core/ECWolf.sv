@@ -28,7 +28,6 @@ assign {SD_SCK, SD_MOSI, SD_CS} = 'Z;
 assign {SDRAM_DQ, SDRAM_A, SDRAM_BA, SDRAM_CLK, SDRAM_CKE, SDRAM_DQML, SDRAM_DQMH, SDRAM_nWE, SDRAM_nCAS, SDRAM_nRAS, SDRAM_nCS} = 'Z;
 
 assign VGA_SCALER  = 0;
-assign VGA_DISABLE = 0;
 assign HDMI_FREEZE = 0;
 assign HDMI_BLACKOUT = 0;
 assign HDMI_BOB_DEINT = 0;
@@ -53,9 +52,18 @@ localparam CONF_STR = {
 	"O[122:121],Aspect ratio,Original,Full Screen,[ARC1],[ARC2];",
 	"O[125:123],Scale,Normal,V-Integer,Narrower HV-Integer,Wider HV-Integer,HV-Integer;",
 	"O[4:2],Scandoubler Fx,None,HQ2x,CRT 25%,CRT 50%,CRT 75%;",
+	// Not with direct_video (the HDMI output is the analog one then), and
+	// the CRT options not with forced_scandoubler: a VGA monitor has its own
+	"H5O[0],HDMI Only,No,Yes;",
+	"H4P1,CRT Options;",
+	"P1-;",
+	// Horizontal Size: entries 0..7 are 0..+7, entries 8..31 are -24..-1
+	"P1O[68:64],Horizontal Size,0,+1,+2,+3,+4,+5,+6,+7,-24,-23,-22,-21,-20,-19,-18,-17,-16,-15,-14,-13,-12,-11,-10,-9,-8,-7,-6,-5,-4,-3,-2,-1;",
+	"P1O[72:69],Horizontal Pos,0,+1,+2,+3,+4,+5,+6,+7,-8,-7,-6,-5,-4,-3,-2,-1;",
+	"P1O[76:73],Vertical Pos,0,+1,+2,+3,+4,+5,+6,+7,-8,-7,-6,-5,-4,-3,-2,-1;",
 	"O[6:5],Stereo Mix,None,25%,50%,100%;",
 	"-;",
-	"O[32],Resolution,320x200,640x200;",
+	"O[33:32],Resolution,320x200,640x200,320x240,640x240;",
 	"O[27:24],Mouse Sensitivity,100%,125%,150%,200%,300%,400%,25%,50%,75%;",
 	"O[31:28],Stick Sensitivity,100%,125%,150%,200%,300%,25%,50%,75%;",
 	"O[19:16],Menu OK,MiSTer,A,B,X,Y,L,R,Select,Start;",
@@ -72,6 +80,8 @@ localparam CONF_STR = {
 };
 
 wire         forced_scandoubler;
+wire         direct_video;
+wire   [3:0] menumask;
 wire   [1:0] buttons;
 wire [127:0] status;
 wire  [10:0] ps2_key;
@@ -89,10 +99,11 @@ hps_io #(.CONF_STR(CONF_STR)) hps_io
 	.gamma_bus(gamma_bus),
 
 	.forced_scandoubler(forced_scandoubler),
+	.direct_video(direct_video),
 
 	.buttons(buttons),
 	.status(status),
-	.status_menumask(16'd0),
+	.status_menumask({10'd0, direct_video, forced_scandoubler, menumask}),
 
 	.joystick_0(joystick_0),
 	.joystick_1(joystick_1),
@@ -120,14 +131,32 @@ wire reset = RESET | buttons[1];
 
 //////////////////////////////////////////////////////////////////
 
+// The video modes of 640x400 and above have two forms (hybrid_host.sv):
+// interlaced at 15kHz for a 15kHz screen, progressive at 31kHz and more for
+// everything else; 800x600 and 1024x768 only exist in the second. A 15kHz
+// screen must never get the second, so it takes the player to say that none
+// is there: forced_scandoubler=1 in MiSTer.ini (the analog output is a VGA
+// monitor) or the option "HDMI Only", with which the analog output is
+// switched off for as long as such a signal is on it. Modes of 15kHz still
+// go to the analog output with "HDMI Only", and so does the OSD over them.
+// With direct_video the HDMI output feeds an analog screen: no "HDMI Only".
+wire       hdmi_only = status[0] & ~direct_video;
+wire       vga31 = forced_scandoubler | hdmi_only;
+
+wire       clk_vid;
 wire       ce_pix;
 wire [7:0] r, g, b;
 wire       hsync, vsync, hblank, vblank;
+wire       hires, fast, f1;
+
+// `fast` follows vga31, and falls only after the output has gone quiet
+assign VGA_DISABLE = fast & ~forced_scandoubler;
 
 hybrid_host host
 (
 	.clk(clk_sys),
 	.reset(reset),
+	.refclk(CLK_50M),
 
 	.ddr_busy(DDRAM_BUSY),
 	.ddr_burstcnt(DDRAM_BURSTCNT),
@@ -150,6 +179,7 @@ hybrid_host host
 	.ps2_mouse(ps2_mouse),
 	.ps2_mouse_ext(ps2_mouse_ext),
 
+	.clk_vid(clk_vid),
 	.ce_pix(ce_pix),
 	.r(r),
 	.g(g),
@@ -158,6 +188,15 @@ hybrid_host host
 	.vsync(vsync),
 	.hblank(hblank),
 	.vblank(vblank),
+	.vga31(vga31),
+	// CRT options: for 15kHz screens
+	.crt_hsize(forced_scandoubler ? 6'd0 : {|status[68:67], status[68:64]}),
+	.crt_hpos(forced_scandoubler ? 4'd0 : status[72:69]),
+	.crt_vpos(forced_scandoubler ? 4'd0 : status[76:73]),
+	.hires(hires),
+	.fast(fast),
+	.f1(f1),
+	.menumask(menumask),
 
 	.audio_l(AUDIO_L),
 	.audio_r(AUDIO_R)
@@ -166,21 +205,24 @@ hybrid_host host
 assign DDRAM_CLK = clk_sys;
 
 //////////////////////////////////////////////////////////////////
-// Video output. The native signal is 15kHz, in the resolution the game picked
-// (the Resolution option is read by the game); video_mixer scandoubles it
-// for VGA monitors (forced_scandoubler) or when a scandoubler effect is
-// selected. Analog output is untouched otherwise so CRTs get the real
-// 15kHz signal. HDMI goes through the framework's scaler; video_freak
-// gives it the aspect ratio and the integer scaling modes.
+// Video output, on hybrid_host's video clock. The native signal is 15kHz, in
+// the video mode the game set (320x200 unless it asks hybrid_host for
+// another); video_mixer scandoubles it for VGA monitors (forced_scandoubler)
+// or when a scandoubler effect is selected, which is why its line buffer has
+// room for the 640 pixels of the widest 15kHz mode. Analog output is
+// untouched otherwise so CRTs get the real 15kHz signal. HDMI goes through
+// the framework's scaler; video_freak gives it the aspect ratio and the
+// integer scaling modes. The modes of 640x400 and above are not scandoubled
+// (hires): interlaced, the scaler weaves the two fields (VGA_F1).
 
 wire [1:0] ar = status[122:121];
 wire [2:0] scale = status[4:2];
 wire [2:0] sl = scale ? scale - 1'd1 : 3'd0;
 wire       vga_de;
 
-assign CLK_VIDEO = clk_sys;
+assign CLK_VIDEO = clk_vid;
 assign VGA_SL = sl[1:0];
-assign VGA_F1 = 0;
+assign VGA_F1 = f1;
 
 video_mixer #(.LINE_LENGTH(640), .HALF_DEPTH(0), .GAMMA(1)) video_mixer
 (
@@ -188,7 +230,7 @@ video_mixer #(.LINE_LENGTH(640), .HALF_DEPTH(0), .GAMMA(1)) video_mixer
 	.CE_PIXEL(CE_PIXEL),
 	.ce_pix(ce_pix),
 
-	.scandoubler(scale || forced_scandoubler),
+	.scandoubler(~hires & (scale || forced_scandoubler)),
 	.hq2x(scale == 1),
 	.gamma_bus(gamma_bus),
 
