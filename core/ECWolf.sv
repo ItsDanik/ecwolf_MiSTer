@@ -64,6 +64,8 @@ localparam CONF_STR = {
 	"O[6:5],Stereo Mix,None,25%,50%,100%;",
 	"-;",
 	"O[33:32],Resolution,320x200,640x200,320x240,640x240;",
+	// the music's chip: the one in the core, or the game's own on the ARM
+	"O[34],FM Music,FPGA,Software;",
 	"O[27:24],Mouse Sensitivity,100%,125%,150%,200%,300%,400%,25%,50%,75%;",
 	"O[31:28],Stick Sensitivity,100%,125%,150%,200%,300%,25%,50%,75%;",
 	"O[19:16],Menu OK,MiSTer,A,B,X,Y,L,R,Select,Start;",

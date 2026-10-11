@@ -16,3 +16,4 @@ These are ECWolf's own features, not something other cores start with:
 - 640x200, 320x240 and 640x240 video modes with the OSD option *Resolution*.
 - Frame interpolation between the game's 70Hz tics (README, "Frame pacing").
 - Solid colour floors and ceilings filled row by row.
+- AdLib music and sound effects on the core's FM chip (`MiSTer_FM*` in `src/mister/mister.cpp`, hooks in `id_sd.cpp`), with the OSD option *FM Music* (status bit 34) to fall back to DBOPL on the ARM. The game's volume settings become operator levels there.
