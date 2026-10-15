@@ -1,16 +1,17 @@
 #!/bin/bash
 #
-# ECWolf (Wolfenstein 3D) launcher. danik_hybrid_cores (Scripts/danik_hybrid_cores.sh)
-# runs it when the ECWolf core is loaded and stops it, with SIGTERM to the
-# process group, when another core is loaded.
+# ECWolf (Wolfenstein 3D) launcher. danik_hybrid_ports (Scripts/danik_hybrid_ports.sh)
+# runs it when the ECWolf core is loaded (also with a game's set name, from
+# its menu entry: MISTER_HYBRID_SET, which the game reads) and stops it, with
+# SIGTERM to the process group, when another core is loaded.
 #
 # Laid out after the per-core handlers of MiSTer Frontier by MiSTer Organize
 # (https://github.com/MiSTerOrganize/MiSTer_Frontier, GPL-3.0), with thanks
 # for the inspiration. Licensed under the GPL-3.0.
 
 CORE="ECWolf"
-GAMEDIR="/media/fat/games/$CORE"
-LOGDIR="/media/fat/logs/$CORE"
+GAMEDIR="/media/fat/games/dnk/$CORE"
+LOGDIR="/media/fat/logs/dnk/$CORE"
 LOG="$LOGDIR/ecwolf.log"
 
 cd "$GAMEDIR" || exit 1
@@ -28,6 +29,18 @@ sleep 1
 
 mv -f "$LOG" "$LOGDIR/ecwolf.prev.log" 2>/dev/null
 
+# What the game prints is kept in memory while it runs and goes to the log on
+# the SD card when it has left. The card is mounted "sync": a line printed
+# straight to it is a write that waits for the card, about 9ms in which the
+# game stands still. (A game that is still running when the MiSTer is
+# switched off leaves no log of that run.)
+RUNLOG=/tmp/ecwolf.log
+: > "$RUNLOG"
+savelog() {
+    cat "$RUNLOG" >> "$LOG" 2>/dev/null
+    : > "$RUNLOG"
+}
+
 # For the hybrid core drivers in the binary: which core to attach to and its
 # default button mapping ("jn" in core/ECWolf.sv)
 export MISTER_HYBRID_CORE="$CORE"
@@ -41,19 +54,36 @@ export XDG_DATA_HOME="$GAMEDIR/config"
 # CPU1) and runs audio and the frame copy on CPU1. Everything else on the
 # MiSTer (scripts, daemons, interrupts) lands on CPU0 as well: without the
 # higher priority the game waits for it a quarter of the time and misses fields.
-# Exit code 42: the player quit a game picked from the list, show the list again.
+# Exit code 42: the player quit a game picked from a list (MH_UI_Menu), start
+# again to show the list. Exit code 43: the core was loaded again while the
+# game ran (MH_CoreReloaded), start again once it has settled, unless it was
+# another core after all.
 GAME=
 # The game must not outlive us: on SIGTERM it saves its settings and quits
-trap '[ -n "$GAME" ] && kill "$GAME" 2>/dev/null; exit 0' TERM INT
+trap '[ -n "$GAME" ] && kill "$GAME" 2>/dev/null && wait "$GAME"; savelog; exit 0' TERM INT
 while :; do
-    nice -n -20 taskset 0x03 ./ECWolf --config "$GAMEDIR/ecwolf.cfg" --savedir "$GAMEDIR/saves" --audiobuffer 1024 >> "$LOG" 2>&1 &
+    nice -n -20 taskset 0x03 ./ECWolf --config "$GAMEDIR/ecwolf.cfg" --savedir "$GAMEDIR/saves" --audiobuffer 1024 >> "$RUNLOG" 2>&1 &
     GAME=$!
     wait "$GAME"
-    [ $? -eq 42 ] || break
+    RC=$?
+    savelog
+    if [ $RC -eq 43 ]; then
+        sleep 1
+        grep -q "^$CORE" /tmp/CORENAME 2>/dev/null || break
+    elif [ $RC -ne 42 ]; then
+        break
+    fi
 done
 GAME=
 
-# Back to the MiSTer menu, unless another core was loaded meanwhile
+# Unless another core was loaded meanwhile: a game that left with an error
+# (one that crashed: 128 + the signal) and put no message up says so on the
+# core's picture (./mh_message, host version 13), and a message stays there
+# until the player leaves the core. Else back to the MiSTer menu.
 if grep -q "^$CORE" /tmp/CORENAME 2>/dev/null; then
-    echo "load_core /media/fat/menu.rbf" > /dev/MiSTer_cmd
+    if [ $RC -ne 0 ] && ! ./mh_message --shown >> "$LOG" 2>&1; then
+        ./mh_message --error "The game stopped unexpectedly (exit code $RC).\nIts log: ${LOG#/media/fat/}" >> "$LOG" 2>&1
+        sleep 0.1
+    fi
+    ./mh_message --shown >> "$LOG" 2>&1 || echo "load_core /media/fat/menu.rbf" > /dev/MiSTer_cmd
 fi

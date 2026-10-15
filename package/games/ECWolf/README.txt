@@ -1,5 +1,5 @@
-ECWolf for MiSTer - Wolfenstein 3D as a hybrid core
-====================================================
+ECWolf for MiSTer - Wolfenstein 3D and Spear of Destiny as a hybrid port
+========================================================================
 
 The game (ECWolf, a source port of the Wolfenstein 3D engine) runs on the
 MiSTer's ARM CPU; the ECWolf FPGA core provides native 15kHz video (CRT, VGA
@@ -8,58 +8,84 @@ and HDMI) at 320x200, 640x200, 320x240 or 640x240, audio and input.
 Disclaimer: AI is being used to speed up development of this project.
 
 Requirements
-  - danik_hybrid_cores, the launcher that comes with this release
-    (Scripts/danik_hybrid_cores.sh): copy it to /media/fat/Scripts/ and run
-    it ONCE from the MiSTer's Scripts menu. It starts the game whenever
-    the core is loaded, keeps running after a reboot, and serves all our
-    hybrid cores. Every hybrid core brings the launcher along and the
-    newest version is the one that runs, so it never has to be run again
-    after an update. Without it the core only shows the MiSTer logo.
-  - Game data. It is not included: use the shareware episode or your own
-    copy of Wolfenstein 3D, Spear of Destiny or Super 3-D Noah's Ark.
+  - danik_hybrid_ports, the launcher that comes with this release
+    (Scripts/danik_hybrid_ports.sh): run it ONCE from the MiSTer's Scripts
+    menu. It starts the game whenever its menu entry is loaded, keeps
+    running after a reboot, and serves all our hybrid ports; its screen
+    picks which ports and games to have, and can keep them up to date
+    through update_all. It replaces danik_hybrid_cores, the launcher before
+    it, and moves ports installed the old way (games/ECWolf/) into the new
+    folders by itself. Without it the core says "Game not running".
+  - Game data. It is not included: your own copy of Wolfenstein 3D or
+    Spear of Destiny (with its mission packs), or the shareware episode or
+    demo.
 
 Install
-  1. Copy _Other/ECWolf_*.rbf to /media/fat/_Other/
-  2. Copy games/ECWolf/ to /media/fat/games/ECWolf/
-  3. Copy the data files of your games to /media/fat/games/ECWolf/
-       Wolfenstein 3D              *.WL6
+  With update_all (Downloader 2.4 or newer): copy
+  downloader_danik_hybrid_ports.ini to /media/fat/, run update_all, run
+  danik_hybrid_ports from the Scripts menu, tick the games, X: Apply.
+  By hand:
+  1. Extract the zip to the root of the SD card (/media/fat): _Other/,
+     games/dnk/ECWolf/, Scripts/ and downloader_danik_hybrid_ports.ini
+     (with which update_all keeps the ports up to date from then on).
+  2. Copy the data files of your games to /media/fat/games/dnk/ECWolf/
+       Wolfenstein 3D              *.WL6 (or *.WL3, episodes 1 to 3)
        Wolfenstein 3D shareware    *.WL1
-       Spear of Destiny            *.SOD (mission packs: *.SD2, *.SD3)
+       Spear of Destiny            *.SOD
+       SoD: Return to Danger       *.SD2, next to the *.SOD files
+       SoD: Ultimate Challenge     *.SD3, next to the *.SOD files
        Spear of Destiny demo       *.SDM
-       Super 3-D Noah's Ark        *.N3D
-  4. Run danik_hybrid_cores from the Scripts menu, if you have not done so
+  3. Run danik_hybrid_ports from the Scripts menu, if you have not done so
      before (see Requirements).
-  5. Load ECWolf from the Other menu.
+  4. Load the game from the Other menu, e.g. dnk-Wolfenstein 3D.
 
-With more than one game installed a list comes up to pick from; quitting a
-game returns to it. With one game, quitting returns to the MiSTer menu.
+The menu entry of Wolfenstein 3D starts the shareware when the full game is
+not there, that of Spear of Destiny the demo. When a game's files are
+missing, the core says which files to copy where. Each game keeps its own
+OSD settings and button mappings. The core file itself
+(_Other/dnk/dnk-ECWolf_*.rbf, or from Recent) lists the games that are
+there to pick from; quitting a game then returns to the list.
 
 OSD options
   Aspect ratio, Scale, Scandoubler Fx, Stereo Mix as in other cores.
-  HDMI Only     as in the other hybrid cores, for resolutions of 640x400
+  FPS Counter   shows the pictures per second in the top left corner.
+  HDMI Only     as in the other hybrid ports, for resolutions of 640x400
                 and more: ECWolf has none, so nothing changes here.
   CRT Options   for a 15kHz screen: Horizontal Size, Horizontal Pos and
                 Vertical Pos fit the picture to it. The pixels stay as they
-                are; HDMI is not affected. Not there with
-                forced_scandoubler=1.
+                are; HDMI is not affected. The size is for the game's
+                picture: the core's own, with its messages, keeps its
+                width. Not there with forced_scandoubler=1. HUD (Bottom):
+                in the 240-line resolutions, how many lines the status bar
+                sits above the bottom edge of the screen, 0 to 24 (10 by
+                default), so that a CRT's overscan does not hide it; greyed
+                out at 200 lines.
   Resolution    what the game renders and the core puts out, always at
                 15kHz: 320x200 (default, as the original), 640x200, the
                 same 200 lines with twice the detail across: every pixel
                 of the original becomes two, so the picture has the same
                 size and shape on the screen, and 320x240 and 640x240,
-                the same with 240 lines: the game's view and the status
-                bar fill them, with more detail from top to bottom, while
-                the menus and title screens keep their 200 lines in the
-                middle. A 15kHz screen that shows all of 200 lines may
-                cut off the first and last of 240. Applies at once in the
-                game and its menus, on the title screens with the next
-                page.
+                the same with 240 lines: the game's view fills all of them,
+                from the top edge to the bottom one, with the status bar
+                drawn over it at the HUD (Bottom) margin and the weapon on
+                top of the bar. The menus, title screens and the
+                intermission keep their 200 lines in the middle of the
+                screen, not stretched. Applies at once in the game and its
+                menus, on the title screens with the next page.
+  FM Music      where the AdLib music and sound effects are made: FPGA
+                (default), on a YM3812 chip in the core, or Software, on
+                the ARM. Applies at once. With an older core file the game
+                uses Software by itself.
   Mouse Sensitivity
                 how fast the mouse turns, 25% to 400%.
   Stick Sensitivity
                 how fast the gamepad's stick turns, 25% to 300%. Both
                 multiply the sensitivity set in the game's own menu and
                 apply at once.
+  Cheats        God Mode: nothing hurts you while it is on. Give
+                Weapons/Ammo/Keys: every weapon, full ammo and both keys,
+                once each time it is selected. Next Level: the level counts
+                as completed, as if you had reached the exit.
   Menu OK, Menu Back
                 the gamepad button that confirms / goes back in the game's
                 menus, whatever it does in the game. MiSTer (default) uses
@@ -72,7 +98,7 @@ Frame pacing
   frame per field and places the player, enemies, doors and pushwalls
   between two steps of the game for it. The game itself runs at its
   original speed. It holds the full rate of one frame per field ("60fps")
-  at both resolutions, 320x200 and 640x200.
+  at every resolution.
 
 Controls
   Keyboard and mouse:
@@ -111,7 +137,7 @@ Controls
 Files
   ecwolf.cfg    the game's settings, written on exit
   saves/        saved games
-  /media/fat/logs/ECWolf/ecwolf.log   the game's log
+  /media/fat/logs/dnk/ECWolf/ecwolf.log   the game's log
 
 Credits
   ECWolf by Braden "Blzut3" Obrzut and contributors, based on Wolf4SDL and

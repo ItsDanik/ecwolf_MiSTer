@@ -1,0 +1,12 @@
+# The games of this core, a line each: <id>|<title> (hybrid/README.md,
+# "Several games in one core"). Each is a menu entry, _Other/dnk-<title>.mgl;
+# with several, its set name is ECWolf_<id> (short: 31 characters at most in
+# all). The same lines are in the catalogue of hybrid/launcher/danik_hybrid_ports.sh.
+# Shareware and demos (WL1, SDM) and the 3-episode Wolfenstein (WL3) have no
+# entry: Wolfenstein 3D's and Spear of Destiny's start them when the full
+# game is not there. Super 3-D Noah's Ark has none either: it is in the list
+# of the core started by itself.
+WL|Wolfenstein 3D
+SOD|Spear of Destiny
+SD2|SoD: Return to Danger
+SD3|SoD: Ultimate Challenge

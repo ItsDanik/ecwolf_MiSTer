@@ -37,3 +37,9 @@ hybrid/docker.sh sh -c "
     -DINTERNAL_ZLIB=ON -DINTERNAL_BZIP2=ON -DINTERNAL_JPEG=ON &&
   cmake --build build/$TARGET -j\$(nproc)"
 ls -la "build/$TARGET/ecwolf" "build/$TARGET/ecwolf.pk3"
+
+# The launch script's messages on the core's picture (hybrid/tools/mh_message.c)
+if [ "$TARGET" = mister ]; then
+    hybrid/docker.sh arm-linux-gnueabihf-gcc -O2 -static -Ihybrid/hps -o build/mister/mh_message \
+        hybrid/tools/mh_message.c hybrid/hps/*.c -lpthread -lm
+fi
