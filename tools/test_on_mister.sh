@@ -2,9 +2,11 @@
 # Try the build on a MiSTer next to what is installed there, without
 # installing it (hybrid/CLAUDE.md, "test on the MiSTer"). It runs what
 # ./package.sh makes, with the port's own danik_hybrid_launch.sh, but:
-#   - the game's folder is /tmp/ecwolf_test (gone after a reboot), with a
-#     copy of the installed game's folder (games/dnk/ECWolf/, or games/ECWolf/
-#     of the old layout: data, settings, saved games) and the package over it
+#   - the game's folder is /tmp/ecwolf_test (gone after a reboot): the
+#     installed game's folder (games/dnk/ECWolf/, or games/ECWolf/ of the old
+#     layout) mirrored, its folders made anew and its files links to the
+#     installed ones, but those under 1MB (settings, saved games) copies, so
+#     that what the game writes stays in /tmp; and the package over it
 #   - the core is in a hidden folder, _Other/.ecwolf_test/, loaded with the
 #     set name ECWolf_TEST: the OSD settings are config/ECWolf_TEST.CFG, at
 #     first a copy of the installed port's, and the game is told which game
@@ -17,6 +19,8 @@
 #   nodata   in a folder without the game's data: the core's message
 #   log      the game's log so far
 #   stop     stop the game, back to the menu, remove all of it
+# TEST_ENV="VAR=value ..." in the environment goes to the game as well, e.g.
+# MISTER_HYBRID_PACE=1 to measure the frame pacing (see the log).
 set -e
 cd "$(dirname "$0")/.."
 NAME=ECWolf
@@ -32,7 +36,11 @@ remote() {
 
 # the launch script, which stops the game (and saves its log) on SIGTERM
 stop_game() {
-    remote "if [ -f $T.pid ]; then kill \$(cat $T.pid) 2>/dev/null; sleep 2; rm -f $T.pid; fi"
+    remote "if [ -f $T.pid ]; then
+            p=\$(cat $T.pid); kill \$p 2>/dev/null
+            for i in 1 2 3 4 5 6 7 8 9 10; do kill -0 \$p 2>/dev/null || break; sleep 1; done
+            rm -f $T.pid
+        fi"
 }
 
 IDS=$(grep -v '^#' package/games.txt | grep '|' | cut -d'|' -f1)
@@ -65,10 +73,16 @@ OUT=${OUT%/}
 stop_game
 # the installed game's folder and settings, once
 if ! remote "[ -d $T ]"; then
-    echo "Copying the installed $NAME to $T on the MiSTer..."
+    echo "Mirroring the installed $NAME in $T on the MiSTer..."
     remote "mkdir -p $T $T.empty
         for d in /media/fat/games/dnk/$NAME /media/fat/games/$NAME; do
-            [ -d \$d ] && { cp -r \$d/. $T/; break; }
+            [ -d \$d ] || continue
+            cp -rs \$d/. $T/
+            find $T -type l | while IFS= read -r f; do
+                t=\$(readlink \"\$f\")
+                [ -f \"\$t\" ] && [ \$(stat -c %s \"\$t\") -lt 1048576 ] && cp --remove-destination \"\$t\" \"\$f\"
+            done
+            break
         done
         cd /media/fat/config
         [ -f $NAME.CFG ] && [ ! -f ${NAME}_TEST.CFG ] && cp $NAME.CFG ${NAME}_TEST.CFG
@@ -97,6 +111,6 @@ remote "cd $DIR && sed -e 's|^GAMEDIR=.*|GAMEDIR=\"$DIR\"|' -e 's|^LOGDIR=.*|LOG
     touch /tmp/${LOWER}_nolaunch
     echo 'load_core $T.mgl' > /dev/MiSTer_cmd
     sleep 4
-    setsid env MISTER_HYBRID_SET=$SET bash .test_launch.sh > /dev/null 2>&1 < /dev/null &
+    setsid env MISTER_HYBRID_SET=$SET $TEST_ENV bash .test_launch.sh > /dev/null 2>&1 < /dev/null &
     echo \$! > $T.pid"
 echo "Started ($WHAT, set name $SET). The OSD settings are the test's own (${NAME}_TEST)."
