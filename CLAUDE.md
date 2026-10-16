@@ -7,6 +7,7 @@
 - Name everywhere: `ECWolf` (core, folders, release), `ecwolf` (game submodule, binary in `build/`, log, lock).
 - The game is the `ecwolf/` submodule (`ItsDanik/ecwolf`, branch `mister`). Its MiSTer code is `src/mister/` and `#ifdef MISTER_HYBRID` elsewhere.
 - Build: `./build.sh` (game), `./core/build_core.sh` (FPGA), `./package.sh` (zip in `dist/`), `MISTER=root@<address> tools/deploy.sh`.
+- Release: the zip in `releases/`. Players get it once it is published to the database, only when Danik asks: `hybrid/launcher/distribution.py publish ~/dnk_Distribution_MiSTer releases/ECWolf_YYYYMMDD.zip` (the rule in `hybrid/CLAUDE.md`).
 - Try a build on the MiSTer without installing it: `MISTER=root@<address> tools/test_on_mister.sh WL|SOD|SD2|SD3|list|nodata|log|stop` (the rule in `hybrid/CLAUDE.md`).
 - ECWolf is the core `hybrid/template/` was cut from. A change here to a file the template also has (`core/` except the `CONF_STR`, `package.sh`, `tools/deploy.sh`, the launch script, the README sections) goes into the template too.
 
