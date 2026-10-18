@@ -29,7 +29,7 @@ By hand:
    - `games/dnk/ECWolf/`, the game binary and its launch script
    - `Scripts/danik_hybrid_ports.sh`, the launcher (from [Hybrid_MiSTer](https://github.com/ItsDanik/Hybrid_MiSTer))
    - `downloader_danik_hybrid_ports.ini`, with which `update_all` keeps the ports up to date from then on
-2. Copy the data files of your games to `/media/fat/games/dnk/ECWolf/`:
+2. Copy **everything** in your games' folders to `/media/fat/games/dnk/ECWolf/`, all the files as they are, and leave nothing out (files the port does not use, such as the `.EXE`s, do no harm). Each game is known by its files:
 
    | Game | Files |
    |---|---|
@@ -41,7 +41,9 @@ By hand:
 3. Run **danik_hybrid_ports** from the `Scripts` menu, if you have not done so before (see Requirements).
 4. Load the game from the `Other` menu, e.g. **dnk-Wolfenstein 3D**.
 
-The menu entry of Wolfenstein 3D starts the shareware when the full game is not there, that of Spear of Destiny the demo. When a game's files are missing, the core says which files to copy where. Each game keeps its own OSD settings and button mappings. The core file itself (`_Other/dnk/dnk-ECWolf_*.rbf`, or from *Recent*) lists the games that are there to pick from; quitting a game then returns to the list. The game's log is in `/media/fat/logs/dnk/ECWolf/ecwolf.log`, its settings in `games/dnk/ECWolf/ecwolf.cfg`, saved games in `games/dnk/ECWolf/saves`.
+The game data can go on a USB drive instead, into the same folder there (`/media/usb0/games/dnk/ECWolf/`): the game looks for it there first, and then keeps its settings and saved games there as well. Everything else stays on the SD card.
+
+The menu entry of Wolfenstein 3D starts the shareware when the full game is not there, that of Spear of Destiny the demo. When a game's files are missing, the core says which files to copy where. Each game keeps its own OSD settings and button mappings. The core file itself (`_Other/dnk/dnk-ECWolf_*.rbf`, or from *Recent*) lists the games that are there to pick from; quitting a game then returns to the list. The game's log is in `/media/fat/logs/dnk/ECWolf/ecwolf.log`, its settings in `games/dnk/ECWolf/ecwolf.cfg`, saved games in `games/dnk/ECWolf/saves` (on the USB drive, if the game data is there).
 
 ## OSD options
 
@@ -56,7 +58,6 @@ The menu entry of Wolfenstein 3D starts the shareware when the full game is not 
 | Mouse Sensitivity | how fast the mouse turns, 25% to 400% |
 | Stick Sensitivity | how fast the gamepad's stick turns, 25% to 300%. Both multiply the sensitivity set in the game's own menu and apply at once |
 | Cheats | **God Mode**: nothing hurts you while it is on. **Give Weapons/Ammo/Keys**: every weapon, full ammo and both keys, once each time it is selected. **Next Level**: the level counts as completed, as if you had reached the exit |
-| Menu OK, Menu Back | the gamepad button that confirms / goes back in the game's menus, whatever it does in the game. **MiSTer** (default) uses the OK/Back buttons of your MiSTer menu |
 
 ## Frame pacing
 
@@ -105,7 +106,9 @@ The game holds the full rate of one frame per field (59.64 per second, "60fps") 
 
 The game's own *Control* menu changes keys, mouse and stick assignments; they are saved in `ecwolf.cfg`. A release that changes the defaults above replaces saved controls with the new defaults once.
 
-Change the buttons in the OSD under *Define ECWolf buttons*. *Menu OK* and *Menu Back* there are only needed for a button without a game function; MiSTer doesn't let you assign a button twice, so to confirm with a button that also fires, pick it in the OSD's Menu OK/Menu Back options instead.
+In the game's menus the buttons that confirm and go back are the ones of your MiSTer menu, whatever they do in the game: its *Menu OK* / *Menu Back* if you set them in *Define joystick buttons*, else its A / B. A controller never set up in MiSTer confirms and goes back as on its console: Cross / Circle on PlayStation, A / B on Xbox and on Nintendo.
+
+Change the buttons in the OSD under *Define ECWolf buttons*. *Menu OK* and *Menu Back* there are only needed for a spare button without a game function. While the OSD is open, the game gets no input.
 
 Naming a saved game without a keyboard: up/down changes the letter, left/right moves the cursor, Menu OK confirms.
 

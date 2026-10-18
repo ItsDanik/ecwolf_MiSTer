@@ -28,7 +28,9 @@ Install
   1. Extract the zip to the root of the SD card (/media/fat): _Other/,
      games/dnk/ECWolf/, Scripts/ and downloader_danik_hybrid_ports.ini
      (with which update_all keeps the ports up to date from then on).
-  2. Copy the data files of your games to /media/fat/games/dnk/ECWolf/
+  2. Copy EVERYTHING in your games' folders to /media/fat/games/dnk/ECWolf/,
+     all the files as they are, and leave nothing out (files the port does
+     not use, such as the .EXEs, do no harm). Each game is known by its files:
        Wolfenstein 3D              *.WL6 (or *.WL3, episodes 1 to 3)
        Wolfenstein 3D shareware    *.WL1
        Spear of Destiny            *.SOD
@@ -38,6 +40,10 @@ Install
   3. Run danik_hybrid_ports from the Scripts menu, if you have not done so
      before (see Requirements).
   4. Load the game from the Other menu, e.g. dnk-Wolfenstein 3D.
+  The game data can go on a USB drive instead, into the same folder there
+  (/media/usb0/games/dnk/ECWolf/): the game looks for it there first, and
+  then keeps its settings and saved games there as well. Everything else
+  stays on the SD card.
 
 The menu entry of Wolfenstein 3D starts the shareware when the full game is
 not there, that of Spear of Destiny the demo. When a game's files are
@@ -86,10 +92,6 @@ OSD options
                 Weapons/Ammo/Keys: every weapon, full ammo and both keys,
                 once each time it is selected. Next Level: the level counts
                 as completed, as if you had reached the exit.
-  Menu OK, Menu Back
-                the gamepad button that confirms / goes back in the game's
-                menus, whatever it does in the game. MiSTer (default) uses
-                the OK/Back buttons of your MiSTer menu.
 
 Frame pacing
   Wolfenstein 3D moves 70 times per second, the refresh rate of the VGA
@@ -127,10 +129,14 @@ Controls
   The game's own Control menu changes keys, mouse and stick assignments;
   they are saved in ecwolf.cfg. A release that changes the defaults above
   replaces saved controls with the new defaults once.
+  In the game's menus the buttons that confirm and go back are the ones of
+  your MiSTer menu, whatever they do in the game: its Menu OK / Menu Back if
+  you set them in "Define joystick buttons", else its A / B. A controller
+  never set up in MiSTer confirms and goes back as on its console: Cross /
+  Circle on PlayStation, A / B on Xbox and on Nintendo.
   Change the buttons in the OSD under "Define ECWolf buttons". "Menu OK" and
-  "Menu Back" there are only needed for a button without a game function;
-  MiSTer doesn't let you assign a button twice, so to confirm with a button
-  that also fires, pick it in the OSD's Menu OK/Menu Back options instead.
+  "Menu Back" there are only needed for a spare button without a game
+  function. While the OSD is open, the game gets no input.
   Naming a saved game without a keyboard: up/down changes the letter,
   left/right moves the cursor, Menu OK confirms.
 
