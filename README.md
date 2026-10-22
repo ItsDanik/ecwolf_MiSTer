@@ -52,12 +52,13 @@ The menu entry of Wolfenstein 3D starts the shareware when the full game is not 
 | Aspect ratio, Scale, Scandoubler Fx, Stereo Mix | as in other cores |
 | FPS Counter | shows the pictures per second in the top left corner |
 | HDMI Only | as in the other hybrid ports, for resolutions of 640x400 and more: ECWolf has none, so nothing changes here |
-| CRT Options | for a 15kHz screen: *Horizontal Size*, *Horizontal Pos* and *Vertical Pos* fit the picture to it. The pixels stay as they are; HDMI is not affected. The size is for the game's picture: the core's own, with its messages, keeps its width. Not there with `forced_scandoubler=1`. *HUD (Bottom)*: in the 240-line resolutions, how many lines the status bar sits above the bottom edge of the screen, 0 to 24 (10 by default), so that a CRT's overscan does not hide it; greyed out at 200 lines |
+| CRT Options | for a 15kHz screen: *Horizontal Size*, *Horizontal Pos* and *Vertical Pos* fit the picture to it. The pixels stay as they are; HDMI is not affected. The size is for the game's picture: the core's own, with its messages, keeps its width. Not there with `forced_scandoubler=1`. *HUD (Bottom)*: in the 240-line resolutions, how many lines the status bar sits above the bottom edge of the screen, 0 to 24 (0 by default), so that a CRT's overscan does not hide it; greyed out at 200 lines. *HUD (Top)* is always greyed out: Wolfenstein has nothing at the top |
 | Resolution | what the game renders and the core puts out, always at 15kHz: **320x200** (default, as the original), **640x200**, the same 200 lines with twice the detail across: every pixel of the original becomes two, so the picture has the same size and shape on the screen, and **320x240** and **640x240**, the same with 240 lines: the game's view fills all of them, from the top edge to the bottom one, with the status bar drawn over it at the *HUD (Bottom)* margin, and the weapon on top of the bar. The menus, title screens and the intermission keep their 200 lines in the middle of the screen, not stretched. Applies at once in the game and its menus, on the title screens with the next page |
 | FM Music | where the AdLib music and AdLib sound effects are made: **FPGA** (default), on a YM3812 chip in the core, which the game only sends its register writes to, or **Software**, the game working the chip out on the ARM as before. Applies at once, so the two can be compared while the music plays. With an older core file the game uses Software by itself |
 | Mouse Sensitivity | how fast the mouse turns, 25% to 400% |
 | Stick Sensitivity | how fast the gamepad's stick turns, 25% to 300%. Both multiply the sensitivity set in the game's own menu and apply at once |
 | Cheats | **God Mode**: nothing hurts you while it is on. **Give Weapons/Ammo/Keys**: every weapon, full ammo and both keys, once each time it is selected. **Next Level**: the level counts as completed, as if you had reached the exit |
+| Save Diagnostic Report | the last line: see [If something is wrong](#if-something-is-wrong) |
 
 ## Frame pacing
 
@@ -111,6 +112,12 @@ In the game's menus the buttons that confirm and go back are the ones of your Mi
 Change the buttons in the OSD under *Define ECWolf buttons*. *Menu OK* and *Menu Back* there are only needed for a spare button without a game function. While the OSD is open, the game gets no input.
 
 Naming a saved game without a keyboard: up/down changes the letter, left/right moves the cursor, Menu OK confirms.
+
+## If something is wrong
+
+If the game stutters, the sound breaks up or something else is wrong, open the OSD while it happens and pick **Save Diagnostic Report**, the last line of the menu. The game keeps running; MiSTer's info box says the report is saved in `games/dnk/diagnostics/` on the SD card. Send that file (`ECWolf_<date>_<time>.zip`) with a few words on what went wrong.
+
+The report has the setup (versions, the video and audio lines of `MiSTer.ini`, the OSD settings), how the last 60 seconds went, the game's log and a screenshot. Nothing else: no network settings, addresses, saved games or lists of your files.
 
 ## Building
 

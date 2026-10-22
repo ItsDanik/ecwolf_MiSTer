@@ -30,7 +30,13 @@ These are ECWolf's own features, not something other cores start with:
 
 - The 200 virtual lines of the 2D graphics are centred (`VirtualToRealCoords()` in `src/v_draw.cpp` with `MiSTer_VirtualTop()`), the status bar's (`SbarGraphic()` in `src/g_wolf/wolf_sbar.cpp`, which sets `MiSTer_HudDrawing`) the *HUD (Bottom)* margin above the bottom edge. Menus already used whole-number factors and are unchanged.
 - `SetViewSize()` (`src/wl_main.cpp`): `statusbary2` is where the bar starts; view size 20 gives the view all lines, smaller sizes fit above the bar. `R_RenderView()` (`src/wl_draw.cpp`) draws the bar over every frame where it overlaps the view; `R_DrawPlayerSprite()` (`src/r_sprites.cpp`) puts the weapon on top of the bar.
-- The margin is read by `MiSTer_UpdateResolution()` every frame (play loop, menus, title pages); a change makes the layout again (`NewViewSize()`) and the screen is drawn again. `MH_SetMenuMask(1)` greys the HUD line in 200-line modes.
+- The margin is read by `MiSTer_UpdateResolution()` every frame (play loop, menus, title pages); a change makes the layout again (`NewViewSize()`) and the screen is drawn again. `MH_SetMenuMask(1)` greys both HUD lines in 200-line modes (`D0`); *HUD (Top)* is always greyed out (`HUD_EDGES` 2'b10, `D7`), Wolfenstein has nothing at the top. Both margins are 0 by default since host version 16 (entry n is n pixels).
+
+## Host version 17 (2026-10-23)
+
+- Built against Hybrid_MiSTer 1c48a06 (the pointer 1aa15c4: only documents changed after it): each game's logo at its start (`package/logos/<id>.png`, Danik's, 440x200), *Save Diagnostic Report* and the info texts, the HUD lines of host version 16, `MIDI_SYNTH` 0 (Danik, 2026-10-23: the games' music is AdLib, no synthesizer, no SoundFont in the zip; no *Music* / *SoundFont* / MT32-pi lines).
+- `MiSTer_PickIWad()` gives each game ECWolf found its files in the game's folder (`./VSWAP.WL6` and the rest, `InGameFolder()`), so `MH_PickGame()` shows "Checking Game Data...", "Game Data OK" and "Loading <title>..." under the logo; a game found only in `$PROGDIR` has none to look for and gets "Loading <title>..." alone. It no longer shows "Loading <title>..." itself. A game beyond the four (Noah's Ark) has no logo: "Loading <title>..." under the MiSTer logo.
+- Core: 31% of the logic, 25% of the RAM blocks, 71% of the DSP blocks, worst slack +0.223 ns. Tried on the MiSTer with `tools/test_on_mister.sh` (2026-10-23): WL, SOD, SD2, SD3 each with its logo and the three lines; `list` (under the MiSTer logo), Wolfenstein 3D picked and quit, the list back; `nodata`; SD3's menu entry without data (`TEST_ENV="MISTER_HYBRID_SET=ECWolf_SD3"` with `nodata`: SOD's logo, "Checking Game Data...", the message); `TEST_USB=1` SOD and `nodata`. *Save Diagnostic Report* not yet tried on the MiSTer: `hybrid/tools/uinput_kbd.py`'s F12 did not open the OSD.
 
 ## Frame pacing (host version 13, measured 2026-10-16)
 

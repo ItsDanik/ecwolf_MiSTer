@@ -63,9 +63,10 @@ OSD options
                 picture: the core's own, with its messages, keeps its
                 width. Not there with forced_scandoubler=1. HUD (Bottom):
                 in the 240-line resolutions, how many lines the status bar
-                sits above the bottom edge of the screen, 0 to 24 (10 by
+                sits above the bottom edge of the screen, 0 to 24 (0 by
                 default), so that a CRT's overscan does not hide it; greyed
-                out at 200 lines.
+                out at 200 lines. HUD (Top) is always greyed out:
+                Wolfenstein has nothing at the top.
   Resolution    what the game renders and the core puts out, always at
                 15kHz: 320x200 (default, as the original), 640x200, the
                 same 200 lines with twice the detail across: every pixel
@@ -92,6 +93,8 @@ OSD options
                 Weapons/Ammo/Keys: every weapon, full ammo and both keys,
                 once each time it is selected. Next Level: the level counts
                 as completed, as if you had reached the exit.
+  Save Diagnostic Report
+                the last line: see "If something is wrong" below.
 
 Frame pacing
   Wolfenstein 3D moves 70 times per second, the refresh rate of the VGA
@@ -139,6 +142,17 @@ Controls
   function. While the OSD is open, the game gets no input.
   Naming a saved game without a keyboard: up/down changes the letter,
   left/right moves the cursor, Menu OK confirms.
+
+If something is wrong
+  If the game stutters, the sound breaks up or something else is wrong,
+  open the OSD while it happens and pick Save Diagnostic Report, the last
+  line of the menu. The game keeps running; MiSTer's info box says the
+  report is saved in games/dnk/diagnostics/ on the SD card. Send that file
+  (ECWolf_<date>_<time>.zip) with a few words on what went wrong. The
+  report has the setup (versions, the video and audio lines of MiSTer.ini,
+  the OSD settings), how the last 60 seconds went, the game's log and a
+  screenshot. Nothing else: no network settings, addresses, saved games or
+  lists of your files.
 
 Files
   ecwolf.cfg    the game's settings, written on exit
