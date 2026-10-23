@@ -7,6 +7,9 @@
 *.SD3
 *.N3D
 
+# Logs of builds
+*.log
+
 # Build outputs
 /build/
 /dist/
