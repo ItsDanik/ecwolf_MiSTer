@@ -1,0 +1,7 @@
+# The games of package/games.txt for dnkLauncher, the frontend (hybrid/docs/dnklauncher.md),
+# a line each: <id>|<year>|<developer>|<description>. The description is shown on the
+# game's Details page, at most 4 lines there (about 340 characters).
+WL|1992|id Software|B.J. Blazkowicz breaks out of Castle Wolfenstein and takes the fight to the Nazi regime, through prisons, bunkers and the Führer's own lair. The game that started the first-person shooter: fast mazes full of guards, secrets behind walls that move and treasure to collect.
+SOD|1992|id Software|Before Wolfenstein 3D: B.J. enters a fortress to take back the Spear of Destiny, the holy lance the Nazis believe will make their army unbeatable. Twenty-one floors, new bosses, and at the end a guardian that is not of this world.
+SD2|1994|FormGen|Return to Danger, the second Spear of Destiny mission: twenty-one new floors that replace nearly everything, the walls, the enemies, the weapons and the sounds, for a new fight in the same war.
+SD3|1994|FormGen|Ultimate Challenge, the third Spear of Destiny mission: twenty-one more floors with new walls, enemies and sounds, the hardest of the three, and a last battle against the Devil himself.
