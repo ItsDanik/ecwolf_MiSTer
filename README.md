@@ -37,7 +37,7 @@ With `update_all` (Downloader 2.4 or newer, which update_all keeps up to date):
    | Spear of Destiny | `*.SOD` |
    | SoD: Return to Danger, SoD: Ultimate Challenge | `*.SD2`, `*.SD3`, next to those of Spear of Destiny |
    | Spear of Destiny demo | `*.SDM` |
-5. Load the game from the `Other` menu, e.g. **dnk-Wolfenstein 3D**.
+5. Load the game from the `Other` menu, e.g. **dnk-Wolfenstein 3D**, or from the `Hybrid Ports` folder if you moved the games there in the launcher.
 
 > [!NOTE]
 > The game data can go on a USB drive instead, into the same folder there (`/media/usb0/games/dnk/ECWolf/`): the game looks for it there first, and then keeps its settings and saved games there as well. Everything else stays on the SD card.
